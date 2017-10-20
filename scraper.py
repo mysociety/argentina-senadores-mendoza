@@ -28,8 +28,6 @@ for member in members:
 
     description = member.cssselect('a')[0].attrib['data-caption-desc']
 
-    print description
-
     timesareaRegex = re.search(u'Período ([0-9]*) - ([0-9]*) - (.*)<\/br>', description)
     memberData['start_date'] = timesareaRegex.group(1)
     memberData['end_date'] = timesareaRegex.group(2)
