@@ -5,10 +5,7 @@ import lxml.html
 import sqlite3
 import re
 
-START_YEAR = '2014'
-END_YEAR = '2018'
-
-BASE_URL = 'http://www.legislaturamendoza.gov.ar/nomina-senadores-periodo-{}-{}/'.format(START_YEAR, END_YEAR)
+BASE_URL = 'http://www.legislaturamendoza.gov.ar/nomina-senadores-periodo-2014-2018/'
 
 # Read in a page
 html = scraperwiki.scrape(BASE_URL)
@@ -31,6 +28,13 @@ for member in members:
 
     description = member.cssselect('a')[0].attrib['data-caption-desc']
 
+    print description
+
+    timesareaRegex = re.search(u'Período ([0-9]*) - ([0-9]*) - (.*)<\/br>', description)
+    memberData['start_date'] = timesareaRegex.group(1)
+    memberData['end_date'] = timesareaRegex.group(2)
+    memberData['area'] = timesareaRegex.group(3)
+
     partyRegex = re.search('^(.*)<\/br>', description)
     memberData['party'] = partyRegex.group(1)
 
@@ -41,12 +45,6 @@ for member in members:
     twitterRegex = re.search('Twitter: <a href="(.*)" target=_new>(.*)<\/a>', description)
     if twitterRegex:
         memberData['twitter'] = twitterRegex.group(2)
-
-#     Facebook: &lt;a href=&quot;https://www.facebook.com/gustavo.arenas.980967&quot; target=_new&gt;Gustavo Arenas&lt;/a&gt;&lt;/br&gt;
-# Twitter: &lt;a href=&quot;https://twitter.com/ArenasGustavo&quot; target=_new&gt;@ArenasGustavo&lt;/a&gt;&lt;/br&gt;
-
-    memberData['start_date'] = START_YEAR
-    memberData['end_date'] = END_YEAR
 
     print memberData
 
